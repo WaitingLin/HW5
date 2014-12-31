@@ -65,7 +65,7 @@ print survival_table
 test_file = open('test.csv', 'rb')
 test_file_object = csv.reader(test_file)
 header = test_file_object.next()
-predictions_file = open("org.csv", "wb")
+predictions_file = open("genderclassagemodel.csv", "wb")
 p = csv.writer(predictions_file)
 p.writerow(["PassengerId", "Survived"])
 
@@ -85,11 +85,27 @@ for row in test_file_object:
 			bin_fare = j
 			break
 	if row[3] == 'female':                             #If the passenger is female
+		if row[4] == '':
 			p.writerow([row[0], "%d" % \
 				int(survival_table[0, float(row[1])-1, bin_fare])])
-	else:   
+		else:
+			row[4]=float(row[4])
+			if row[4] < 18 and (row[1] == '1' or row[1] == '2'):
+				p.writerow([row[0],'1'])
+			else:
+				p.writerow([row[0], "%d" % \
+				int(survival_table[0, float(row[1])-1, bin_fare])])
+	else:
+		if row[4] == '':
 			p.writerow([row[0], "%d" % \
 				int(survival_table[1, float(row[1])-1, bin_fare])])
+		else:
+			row[4]=float(row[4])
+			if row[4] < 18 and (row[1] == '1' or row[1] == '2'):
+				p.writerow([row[0],'1'])
+			else:
+				p.writerow([row[0], "%d" % \
+					int(survival_table[1, float(row[1])-1, bin_fare])])
 
 # Close out the files.
 test_file.close() 
